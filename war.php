@@ -71,39 +71,62 @@ class Game {
     public function __construct($deck) {
         $this->player1 = $deck->deck1;
         $this->player2 = $deck->deck2;
+        $this->score = new \stdClass(); // So that I don't have to deal with the PHP warning
+        // Create the two properties of the player 1 and the player 2 scores
         $this->score->player1 = 0;
         $this->score->player2 = 0;
+        $this->score->ties = 0;
     }
     
     public function playGame() {
         for ($i = 0; $i <= 25; $i++) {
-            if (this->$player1[$i]->value > this->$player2[$i]->value) {
+            if ($this->player1[$i]->value > $this->player2[$i]->value) {
                 $this->score->player1++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Player 1', $this->score);
-            } elseif (this->$player1[$i]->value < this->$player2[$i]->value) {
+            } elseif ($this->player1[$i]->value < $this->player2[$i]->value) {
                 $this->score->player2++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Player 2', $this->score);
-            } elseif (this->$player1[$i]->value == this->$player2[$i]->value) {
+            } elseif ($this->player1[$i]->value == $this->player2[$i]->value) {
+                $this->score->ties++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Tie', $this->score);
             }
         }
+        
+        if ($this->score->player1 > $this->score->player2) {
+            echo '<p><strong>Player 1 Wins!</strong></p>';
+        } elseif ($this->score->player1 < $this->score->player2) {
+            echo '<p><strong>Player 2 Wins!</strong></p>';
+        } elseif ($this->score->player1 == $this->score->player2) {
+            echo "<p><strong>It's a tie! No one wins, except for the love in your heart.</strong></p>";
+        }
+
     }
     
     private function output($card1, $card2, $result, $score) {
-        $output = 'Player 1 has <strong>' . $card1->suit . ' of ' $card1->value . '</strong>. ';
-        $output .= 'Player 2 has <strong>' . $card2 . '</strong>. ';
+        $output = 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
+        $output .= 'Player 2 has <strong>' . $card2->value . ' of ' . $card2->suit . '</strong>. ';
         $output .= '<em>';
         if ($result == 'Player 1') {
             $output .= ' Player 1 wins this round!';
-        } elseif {$result == 'Player 2'} {
+        } elseif ($result == 'Player 2') {
             $output .= ' Player 2 wins this round!';
-        } elseif {$result == 'Tie'} {
+        } elseif ($result == 'Tie') {
             $output .= " There's a tie! Nobody Wins";
         }
         $output .= '</em>';
         $output .= '<br>';
-        $output .= '<strong>The current score is Player 1: ' . $score->player1 . ' and Player 2: ' . $score->player2 . '!';
+        $output .= '<strong>';
+        $output .= 'Score-- ';
+        $output .= 'Player 1: ' . $score->player1;
+        $output .= ' / ';
+        $output .= 'Player 2: ' . $score->player2;
+        $output .= ' / ';        
+        $output .= 'Ties: ' . $score->ties;
+        $output .= '!</strong>';
         $output .= '<br>';
+        
+        echo $output;
+        
     }
 }
 
@@ -127,7 +150,9 @@ $warDeck->splitDeck();
 // Stars the game
 $game = new Game($warDeck);
 
-new Output ($game);
+$game->playGame();
+
+//new Output ($game);
 
 // Utility Function
 
