@@ -34,6 +34,47 @@ class Card {
     }
 }
 
+/*
+ * This is the Deck, it takes in an array of cards
+ * It also shuffles the deck once created, and can split the deck in half
+ */
+class Deck {
+    
+    public $deck;
+    public $deck1;
+    public $deck2;
+    
+    public function __construct($deck) {
+        $this->deck = $deck;
+        $this->shuffleDeck();
+    }
+    
+    private function shuffleDeck() {
+        shuffle ($this->deck);    
+    }
+    
+    public function splitDeck() {
+        $this->deck1 = array_slice($this->deck, 0,26);
+        $this->deck2 = array_slice($this->deck, 26,26);
+    }
+}
+
+/*
+ * This is the Game, it handles all of the aspects of the game
+ */
+class Game {
+    
+    private $deck;
+    private $player1;
+    private $player2;
+    
+    public function __construct($deck) {
+        $this->player1 = $deck->deck1;
+        $this->player2 = $deck->deck2;
+    }
+    
+}
+
 // Generator function to create cards, stars with number 1
 function cardGenerator($numberOfCards) {
     for ($i = 1; $i <= $numberOfCards; $i++) {
@@ -47,7 +88,14 @@ foreach($suits as $suit) {
         $deck[] = new Card($suit, $i);
     }
 }
+// Create the Deck for war
+$warDeck = new Deck($deck);
+// Split the deck amongst each player
+$warDeck->splitDeck();
 
+$game = new Game($warDeck);
+
+new Output ($game);
 
 // Utility Function
 
