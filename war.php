@@ -13,6 +13,15 @@
  * Usage:
  * Card (string suit, number value)
  */
+ 
+/* Global Variables 
+ *
+ */
+ 
+// The suits of the playing cards 
+$suits = ['Diamonds','Kings','Spades','Clubs'];
+// Deck array, to place all of the cards in later
+$deck = array();
 
 class Card {
     
@@ -25,6 +34,30 @@ class Card {
     }
 }
 
+// Generator function to create cards, stars with number 1
+function cardGenerator($numberOfCards) {
+    for ($i = 1; $i <= $numberOfCards; $i++) {
+        yield $i;
+    }
+}
 
+// Look to iterate through the suits and card generation
+foreach($suits as $suit) {
+    foreach(cardGenerator(13) as $i ) {
+        $deck[] = new Card($suit, $i);
+    }
+}
+
+
+// Utility Function
+
+class Output {
+    
+    public function __construct($var) {
+        echo '<pre>';
+        print_r($var);
+        echo '</pre>';
+    }
+}
 
 ?>
