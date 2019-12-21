@@ -13,17 +13,9 @@
  * Usage:
  * Card (string suit, number value)
  */
- 
-/* Global Variables 
- *
- */
- 
-// The suits of the playing cards 
-// Deck array, to place all of the cards in later
-$deck = array();
 
-class Card {
-    
+class Card
+{    
     public $suit;
     public $value;
     
@@ -40,7 +32,8 @@ class Card {
  * 2) Deck->splitDeck() splits the deck in half.
  * It also shuffles the deck once created, and can split the deck in half
  */
-class Deck {
+class Deck
+{
     
     public $cards = array(); // Set up as an empty array, to hold any number of cards we wish to hold
     public $deck; // the whole deck
@@ -48,19 +41,20 @@ class Deck {
     public $deck2; // player 2's deck
     public $suits = ['Diamonds','Kings','Spades','Clubs'];
 
-    public function __construct() {
-    
+    public function __construct()
+    {
         foreach($this->suits as $suit) {
-                foreach($this->cardGenerator(13) as $i ) {
-                    $this->cards[] = new Card($suit, $i);
-                }
+            foreach($this->cardGenerator(13) as $i ) {
+                $this->cards[] = new Card($suit, $i);
             }
+        }
             
-            $this->deck = $this->cards;
+        $this->deck = $this->cards;
     }
     
     // Shuffles the array of cards
-    public function shuffleDeck() {
+    public function shuffleDeck()
+    {
         shuffle ($this->deck);    
     }
     
@@ -68,13 +62,15 @@ class Deck {
      * Note: perhaps in a future version, doing something more complex such as alternating every other element to the other player
      * However splitting the array in half felt just as safe, being that the deck was shuffled earlier
     */
-    public function splitDeck() {
+    public function splitDeck()
+    {
         $this->deck1 = array_slice($this->deck, 0,26);
         $this->deck2 = array_slice($this->deck, 26,26);
     }
 
     // Generator function to create cards, stars with number 1
-    private function cardGenerator($numberOfCards) {
+    private function cardGenerator($numberOfCards)
+    {
         for ($i = 1; $i <= $numberOfCards; $i++) {
             yield $i;
         }
@@ -86,8 +82,8 @@ class Deck {
  * Game->playGame() plays the game
  * Game->output() handles all of the reporting for the game
  */
-class Game {
-    
+class Game
+{
     private $player1; // This is going to hold players 1's deck
     private $player2; // This is going to hold players 2's deck
     public $score; // This is going to keep track of the score. See note below on thought proccess
@@ -108,7 +104,8 @@ class Game {
     }
     
     // This handles playing of the game
-    public function playGame() {
+    public function playGame()
+    {
         
         /* Iterate through the array of cards, compare them, if the value is higher for a player, add to their score and then
          * send the necessary information to output so that we can display the results
@@ -142,7 +139,8 @@ class Game {
     /* This handles outputting of the statements. For the purpose of keeping things simple,
      * I created one long string statement and added all of the tags, etc through them
      */
-    private function output($card1, $card2, $result, $score) {
+    private function output($card1, $card2, $result, $score)
+    {
         $output = 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
         $output .= 'Player 2 has <strong>' . $card2->value . ' of ' . $card2->suit . '</strong>. ';
         $output .= '<em>';
@@ -183,5 +181,3 @@ $game = new Game($warDeck);
 
 // Plays the game
 $game->playGame();
-
-?>
