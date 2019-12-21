@@ -64,15 +64,47 @@ class Deck {
  */
 class Game {
     
-    private $deck;
     private $player1;
     private $player2;
+    public $score;
     
     public function __construct($deck) {
         $this->player1 = $deck->deck1;
         $this->player2 = $deck->deck2;
+        $this->score->player1 = 0;
+        $this->score->player2 = 0;
     }
     
+    public function playGame() {
+        for ($i = 0; $i <= 25; $i++) {
+            if (this->$player1[$i]->value > this->$player2[$i]->value) {
+                $this->score->player1++;
+                $this->output($this->player1[$i], $this->player2[$i], 'Player 1', $this->score);
+            } elseif (this->$player1[$i]->value < this->$player2[$i]->value) {
+                $this->score->player2++;
+                $this->output($this->player1[$i], $this->player2[$i], 'Player 2', $this->score);
+            } elseif (this->$player1[$i]->value == this->$player2[$i]->value) {
+                $this->output($this->player1[$i], $this->player2[$i], 'Tie', $this->score);
+            }
+        }
+    }
+    
+    private function output($card1, $card2, $result, $score) {
+        $output = 'Player 1 has <strong>' . $card1->suit . ' of ' $card1->value . '</strong>. ';
+        $output .= 'Player 2 has <strong>' . $card2 . '</strong>. ';
+        $output .= '<em>';
+        if ($result == 'Player 1') {
+            $output .= ' Player 1 wins this round!';
+        } elseif {$result == 'Player 2'} {
+            $output .= ' Player 2 wins this round!';
+        } elseif {$result == 'Tie'} {
+            $output .= " There's a tie! Nobody Wins";
+        }
+        $output .= '</em>';
+        $output .= '<br>';
+        $output .= '<strong>The current score is Player 1: ' . $score->player1 . ' and Player 2: ' . $score->player2 . '!';
+        $output .= '<br>';
+    }
 }
 
 // Generator function to create cards, stars with number 1
@@ -92,7 +124,7 @@ foreach($suits as $suit) {
 $warDeck = new Deck($deck);
 // Split the deck amongst each player
 $warDeck->splitDeck();
-
+// Stars the game
 $game = new Game($warDeck);
 
 new Output ($game);
