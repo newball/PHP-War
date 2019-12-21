@@ -19,7 +19,8 @@ class Card
     public $suit;
     public $value;
     
-    public function __construct($suit, $value) {
+    public function __construct($suit, $value)
+    {
         $this->suit = $suit;
         $this->value = $value;
     }
@@ -88,7 +89,8 @@ class Game
     private $player2; // This is going to hold players 2's deck
     public $score; // This is going to keep track of the score. See note below on thought proccess
     
-    public function __construct($deck) {
+    public function __construct($deck)
+    {
         $this->player1 = $deck->deck1;
         $this->player2 = $deck->deck2;
         
