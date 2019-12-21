@@ -9,6 +9,21 @@
  * 
  */
 
+/* Crates the card object with two properties: suit, value
+ * Usage:
+ * Card (string suit, number value)
+ */
+
+class Card {
+    
+    public $suit;
+    public $value;
+    
+    public function __construct($suit, $value) {
+        $this->suit = $suit;
+        $this->value = $value;
+    }
+}
 
 
 
