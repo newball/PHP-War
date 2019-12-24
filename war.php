@@ -114,13 +114,14 @@ class Game
          */
          
         for ($i = 0; $i <= 25; $i++) {
-            if ($this->player1[$i]->value > $this->player2[$i]->value) {
+            $result = $this->compareCards($this->player1[$i], $this->player2[$i]);
+            if ($result == 'Player 1') {
                 $this->score->player1++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Player 1', $this->score);
-            } elseif ($this->player1[$i]->value < $this->player2[$i]->value) {
+            } elseif ($result == 'Player 2') {
                 $this->score->player2++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Player 2', $this->score);
-            } elseif ($this->player1[$i]->value == $this->player2[$i]->value) {
+            } elseif ($result == 'Tie') {
                 $this->score->ties++;
                 $this->output($this->player1[$i], $this->player2[$i], 'Tie', $this->score);
             }
@@ -135,6 +136,29 @@ class Game
             echo '<p><strong>Player 1 Wins!</strong></p>';
         } else {
             echo '<p><strong>Player 2 Wins!</strong></p>';
+        }
+    }
+    
+    /*
+     * Here we compare the cards against each other. Using this as a comparison engine.
+     * Note: we're pulling in the full card object, so that in possible future iterations
+     * we can possibly compare against the Suits, if that ever matters.
+     * Usage:
+     * compareCards (object - card 1, object - card 2)
+     * returns string - Tie | Player 1 | Player 2
+     */
+    private function compareCards($c1,$c2)
+    {   
+        // Pull in the object and grab the values
+        $card1 = $c1->value;
+        $card2 = $c2->value;
+        
+        if ($card1 == $card2) {
+            return "Tie";
+        } elseif ($card1 > $card2) {
+            return "Player 1";
+        } elseif ($card1 < $card2) {
+            return "Player 2";
         }
     }
     
