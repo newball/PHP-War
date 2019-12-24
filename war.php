@@ -140,6 +140,31 @@ class Game
     }
     
     /*
+     * This is to pull cards from the top of the deck, returning an object with one card or multuple.
+     * In most cases we're going to pull either 1 or 3 cards (for when there's a card 'War').
+     * However function can take in any integer.
+     * Usage: pullCards (integer - number of cards, object - array of deck object)
+     * Returns: array of Cards object
+     */
+     
+    private function pullCards($num, $deck)
+    {
+        // The cards we are going to return
+        $cards = array();
+        
+        switch ($num) {
+            case 1:
+                $cards = array_push($cards, array_shift($deck));
+            break;
+            case 3:
+                $cards = array_splice($deck, 0,3);
+            break;
+        }
+        
+        return $cards;
+    }
+        
+    /*
      * Here we compare the cards against each other. Using this as a comparison engine.
      * Note: we're pulling in the full card object, so that in possible future iterations
      * we can possibly compare against the Suits, if that ever matters.
@@ -161,7 +186,7 @@ class Game
             return "Player 2";
         }
     }
-    
+        
     /* This handles outputting of the statements. For the purpose of keeping things simple,
      * I created one long string statement and added all of the tags, etc through them
      */
