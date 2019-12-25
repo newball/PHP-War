@@ -147,33 +147,38 @@ class Game
          * from each deck. If there isn't, use the remaining card as the matching card.
          * This idea comes from a variation of the rules set of War, see: https://www.pagat.com/war/war.html#two
          */
-
         if (count($this->player1) >= 1 && count($this->player2) >= 1 ) {
+            // Assign each card to each player
             $this->current_card->p1 = array_shift($this->player1);
             $this->current_card->p2 = array_shift($this->player2);
+            // Add each card to the card pool
             array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);
         } elseif (count($this->player1) == 1) {
-            $this->current_card->p1 = array_shift($this->player2);
+            // Assign the next top card for player 2 as their current card
+            $this->current_card->p2 = array_shift($this->player2);
+            // Add that card to the pool of cards
             array_push($this->card_pool, $this->current_card->p2);
         } elseif (count($this->player2) == 1) {
-            $this->current_card->p2 = array_shift($this->player1);
+            // Assign the next top card for player 1 as their current card
+            $this->current_card->p1 = array_shift($this->player1);
+            // Add that card to the pool of cards
             array_push($this->card_pool, $this->current_card->p1);
         }
-        
     }
     
     /*
      * For when there is a tie and war needs to be declared
+     * Usage: $this->iDeclareWar()
      */
-    private function iDeclareWar() {
-        
+    private function iDeclareWar()
+    {    
         // Grab the next three cards and push them into the card pool
         for ($i = 0; $i < 3; $i++) {
             
-            // Check to see if there are 4 cards left in either deck the reason why the number 4
-            // is to account for the 3 cards that would be pulled and then the last card to be displayed
-            // face up. 
-            
+            /* Check to see if there are 4 cards left in either deck the reason why the number 4
+             * is to account for the 3 cards that would be pulled and then the last card to be displayed
+             * face up.
+             */
             if (count($this->player1) >= 4) {
                 array_push($this->card_pool, array_shift($this->player1));
             }
