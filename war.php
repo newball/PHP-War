@@ -125,12 +125,15 @@ class Game
             $result = $this->compareCards();
             
             // Check for a tie first, if there is a tie, add 3 cards to the card pool
-            // Otherwise, distribue the cards to the winner.
+            // Otherwise, distribute the cards to the winner.
             if ($result == 'Tie') {
                 $this->iDeclareWar();
             } else {
                 $this->distributeCards($result);
             }
+            
+            // Display the results
+            $this->output($this->current_card->p1, $this->current_card->p2, $result);
         }
     }
     
@@ -200,9 +203,12 @@ class Game
      * I created one long string statement and added all of the tags, etc through them
      */
     private function output($card1, $card2, $result)
-    {
-        $output = 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
+    {   
+        $output = '<p>';
+        $output .= 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
+        $output .= '<br>';
         $output .= 'Player 2 has <strong>' . $card2->value . ' of ' . $card2->suit . '</strong>. ';
+        $output .= '<br>';
         $output .= '<em>';
         if ($result == 'Player 1') {
             $output .= ' Player 1 wins this round!';
@@ -212,12 +218,12 @@ class Game
             $output .= " There's a tie! I! De-Clare! War!";
         }
         $output .= '</em>';
-        $output .= '<br>';
+        $output .= '</p>';
         $output .= '<strong>';
-        $output .= 'Player 1 has ' . count($this->player1) . 'cards';
+        $output .= 'Player 1 has ' . count($this->player1) . ' cards';
         $output .= ' / ';
-        $output .= 'Player 2 has ' . count($this->player2) . 'cards';
-        $output .= '<br>';
+        $output .= 'Player 2 has ' . count($this->player2) . ' cards';
+        $output .= '</strong>';
         
         echo $output;
     }
