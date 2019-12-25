@@ -182,12 +182,11 @@ class Game
         // Pull in the object and grab the values
         $card1 = $this->current_card->p1->value;
         $card2 = $this->current_card->p2->value;
-             
         if ($card1 == $card2) {
             return "Tie";
-        } elseif ($card1 > $card2) {
+        } elseif ($card1 == 1 || $card1 > $card2) {
             return "Player 1";
-        } elseif ($card1 < $card2) {
+        } elseif ($card1 == 1 || $card1 < $card2) {
             return "Player 2";
         }
     }
