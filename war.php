@@ -131,6 +131,7 @@ class Game
             } else {
                 $this->distributeCards($result);
             }
+    
             
             // Display the results
             $this->output($this->current_card->p1, $this->current_card->p2, $result);
@@ -142,24 +143,46 @@ class Game
      */
      
     private function topCard()
-    {
-        // Grab the first card from the array of decks
-        $this->current_card->p1 = array_shift($this->player1);
-        $this->current_card->p2 = array_shift($this->player2);
+    {    
+        /* 
+         * Check each deck size to see if there's more than 1 card left. If there is, pull the top card
+         * from each deck. If there isn't, use the remaining card as the matching card.
+         * This idea comes from a variation of the rules set of War, see: https://www.pagat.com/war/war.html#two
+         */
+
+        if (count($this->player1) >= 1 && count($this->player2) >= 1 ) {
+            $this->current_card->p1 = array_shift($this->player1);
+            $this->current_card->p2 = array_shift($this->player2);
+            array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);
+        } elseif (count($this->player1) == 1) {
+            $this->current_card->p1 = array_shift($this->player2);
+            array_push($this->card_pool, $this->current_card->p2);
+        } elseif (count($this->player2) == 1) {
+            $this->current_card->p2 = array_shift($this->player1);
+            array_push($this->card_pool, $this->current_card->p1);
+        }
         
-        // Push them into the card pool array
-        array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);           
     }
     
     /*
      * For when there is a tie and war needs to be declared
      */
     private function iDeclareWar() {
-
-        // Grab the next trhee cards and push them into the card pool
+        
+        // Grab the next three cards and push them into the card pool
         for ($i = 0; $i < 3; $i++) {
-            array_push($this->card_pool, array_shift($this->player1));
-            array_push($this->card_pool, array_shift($this->player2));
+            
+            // Check to see if there are 4 cards left in either deck the reason why the number 4
+            // is to account for the 3 cards that would be pulled and then the last card to be displayed
+            // face up. 
+            
+            if (count($this->player1) >= 4) {
+                array_push($this->card_pool, array_shift($this->player1));
+            }
+
+            if (count($this->player2) >= 4) {
+                array_push($this->card_pool, array_shift($this->player2));
+            }
         }
     }
         
@@ -198,16 +221,44 @@ class Game
         // Empties the card pool array
         $this->card_pool = array();
     }
+
+    /*
+     * This assigns a value string to the value of cards that aren't 2 - 10.
+     * If value is 1, 11 - 13 it will return a string of the corresponding card.
+     * Otherwise it simply returns the value
+     * Usage: $this->cardValue(integer $card_value);
+     * Returns: int || string (Ace | Jack | Queen | King)
+     */
+    private function cardValue($card_value) {
         
+        switch ($card_value) {
+            case 1:
+                return 'Ace';
+                break;
+            case 11:
+                return 'Jack';
+                break;
+            case 12:
+                return 'Queen';
+                break;
+            case 13:
+                return 'King';
+                break;
+            default:
+                return $card_value;
+        }
+    }
+
     /* This handles outputting of the statements. For the purpose of keeping things simple,
      * I created one long string statement and added all of the tags, etc through them
      */
     private function output($card1, $card2, $result)
-    {   
+    {           
+        
         $output = '<p>';
-        $output .= 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
+        $output .= 'Player 1 has <strong>' . $this->cardValue($card1->value) . ' of ' . $card1->suit . '</strong>. ';
         $output .= '<br>';
-        $output .= 'Player 2 has <strong>' . $card2->value . ' of ' . $card2->suit . '</strong>. ';
+        $output .= 'Player 2 has <strong>' . $this->cardValue($card2->value) . ' of ' . $card2->suit . '</strong>. ';
         $output .= '<br>';
         $output .= '<em>';
         if ($result == 'Player 1') {
