@@ -1,6 +1,4 @@
 <?php
- /* Enter your code here. Read input from STDIN. Print output to STDOUT */
-
 /*
  * PHP Version of the card game War
  * Creator: Leo Newball
