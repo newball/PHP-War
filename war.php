@@ -199,7 +199,7 @@ class Game
             return "Tie";
         } elseif ($card1 == 1 || $card1 > $card2) {
             return "Player 1";
-        } elseif ($card1 == 1 || $card1 < $card2) {
+        } elseif ($card2 == 1 || $card1 < $card2) {
             return "Player 2";
         }
     }
