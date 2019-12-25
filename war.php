@@ -1,4 +1,5 @@
 <?php
+ /* Enter your code here. Read input from STDIN. Print output to STDOUT */
 
 /*
  * PHP Version of the card game War
@@ -115,40 +116,22 @@ class Game
     // This handles playing of the game
     public function playGame()
     {
-        
+        // Play the game, while each deck isn't = 0  
         while (count($this->player1) != 0 && count($this->player2) != 0) {
             // Pull the top card
             $this->topCard();
             
-            // COmpare the results of the top cards
+            // Compare the results of the top cards
             $result = $this->compareCards();
             
+            // Check for a tie first, if there is a tie, add 3 cards to the card pool
+            // Otherwise, distribue the cards to the winner.
             if ($result == 'Tie') {
-                echo '<pre>';
-                echo 'Tie';
-                echo '</pre>';
-                echo '<pre>';
-                print_r($this->card_pool);
-                echo '</pre>';
-
                 $this->iDeclareWar();
             } else {
-                echo '<pre>';
-                print_r($this->card_pool);
-                echo '</pre>';
                 $this->distributeCards($result);
             }
-            
-            
-                echo '<pre>Player1';
-                var_dump($this->player1);
-                echo '</pre>';
-
-                echo '<pre>Player2';
-                var_dump($this->player2);
-                echo '</pre>';
         }
-            
     }
     
     /*
@@ -157,17 +140,20 @@ class Game
      
     private function topCard()
     {
+        // Grab the first card from the array of decks
         $this->current_card->p1 = array_shift($this->player1);
         $this->current_card->p2 = array_shift($this->player2);
         
-        array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);
-                
+        // Push them into the card pool array
+        array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);           
     }
     
     /*
      * For when there is a tie and war needs to be declared
      */
     private function iDeclareWar() {
+
+        // Grab the next trhee cards and push them into the card pool
         for ($i = 0; $i < 3; $i++) {
             array_push($this->card_pool, array_shift($this->player1));
             array_push($this->card_pool, array_shift($this->player2));
@@ -182,6 +168,9 @@ class Game
         // Pull in the object and grab the values
         $card1 = $this->current_card->p1->value;
         $card2 = $this->current_card->p2->value;
+        
+        // Checks for a tie first, if not a tie then check to see if the card is an Ace.
+        // If the card is an Ace, or that player has a higher value that player wins,
         if ($card1 == $card2) {
             return "Tie";
         } elseif ($card1 == 1 || $card1 > $card2) {
@@ -190,24 +179,27 @@ class Game
             return "Player 2";
         }
     }
-    
+    /*
+     * Distribute the cards to the winner.
+     * Useage: $this->distributeCards(string 'Player 1' | 'Player 2')
+     */
     private function distributeCards($player) {
         for ($i = 0; $i < count($this->card_pool); $i++) {
             if ($player == 'Player 1') {
                 array_push($this->player1, $this->card_pool[$i]);
             } elseif ($player == 'Player 2') {
-                array_push($this->player1, $this->card_pool[$i]);
+                array_push($this->player2, $this->card_pool[$i]);
             }
         }
         
-        // Empty the card array
+        // Empties the card pool array
         $this->card_pool = array();
     }
         
     /* This handles outputting of the statements. For the purpose of keeping things simple,
      * I created one long string statement and added all of the tags, etc through them
      */
-    private function output($card1, $card2, $result, $score)
+    private function output($card1, $card2, $result)
     {
         $output = 'Player 1 has <strong>' . $card1->value . ' of ' . $card1->suit . '</strong>. ';
         $output .= 'Player 2 has <strong>' . $card2->value . ' of ' . $card2->suit . '</strong>. ';
@@ -217,18 +209,14 @@ class Game
         } elseif ($result == 'Player 2') {
             $output .= ' Player 2 wins this round!';
         } elseif ($result == 'Tie') {
-            $output .= " There's a tie! Nobody Wins";
+            $output .= " There's a tie! I! De-Clare! War!";
         }
         $output .= '</em>';
         $output .= '<br>';
         $output .= '<strong>';
-        $output .= 'Score-- ';
-        $output .= 'Player 1: ' . $score->player1;
+        $output .= 'Player 1 has ' . count($this->player1) . 'cards';
         $output .= ' / ';
-        $output .= 'Player 2: ' . $score->player2;
-        $output .= ' / ';        
-        $output .= 'Ties: ' . $score->ties;
-        $output .= '!</strong>';
+        $output .= 'Player 2 has ' . count($this->player2) . 'cards';
         $output .= '<br>';
         
         echo $output;
