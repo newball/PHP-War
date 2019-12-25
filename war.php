@@ -40,7 +40,7 @@ class Deck
     public $deck; // the whole deck
     public $deck1; // player 1's deck
     public $deck2; // player 2's deck
-    public $suits = ['Diamonds','Kings','Spades','Clubs'];
+    public $suits = ['Diamonds','Spades','Clubs','Hearts'];
 
     public function __construct()
     {
@@ -87,7 +87,9 @@ class Game
 {
     private $player1; // This is going to hold players 1's deck
     private $player2; // This is going to hold players 2's deck
-    public $score; // This is going to keep track of the score. See note below on thought proccess
+    public $score; // This is going to keep track of the score. See note below on thought process
+    private $current_card; // This is going to hold the current card for each player.
+    private $card_pool = array(); // These are the current cards in the card pool.
     
     public function __construct($deck)
     {
@@ -103,81 +105,84 @@ class Game
         $this->score->player1 = 0;
         $this->score->player2 = 0;
         $this->score->ties = 0;
+        
+        // Sets up the current card properties
+        $this->current_card = new \stdClass();
+        $this->current_card->p1 = null;
+        $this->current_card->p2 = null;        
     }
     
     // This handles playing of the game
     public function playGame()
     {
         
-        /* Iterate through the array of cards, compare them, if the value is higher for a player, add to their score and then
-         * send the necessary information to output so that we can display the results
-         */
-         
-        for ($i = 0; $i <= 25; $i++) {
-            $result = $this->compareCards($this->player1[$i], $this->player2[$i]);
-            if ($result == 'Player 1') {
-                $this->score->player1++;
-                $this->output($this->player1[$i], $this->player2[$i], 'Player 1', $this->score);
-            } elseif ($result == 'Player 2') {
-                $this->score->player2++;
-                $this->output($this->player1[$i], $this->player2[$i], 'Player 2', $this->score);
-            } elseif ($result == 'Tie') {
-                $this->score->ties++;
-                $this->output($this->player1[$i], $this->player2[$i], 'Tie', $this->score);
+        while (count($this->player1) != 0 && count($this->player2) != 0) {
+            // Pull the top card
+            $this->topCard();
+            
+            // COmpare the results of the top cards
+            $result = $this->compareCards();
+            
+            if ($result == 'Tie') {
+                echo '<pre>';
+                echo 'Tie';
+                echo '</pre>';
+                echo '<pre>';
+                print_r($this->card_pool);
+                echo '</pre>';
+
+                $this->iDeclareWar();
+            } else {
+                echo '<pre>';
+                print_r($this->card_pool);
+                echo '</pre>';
+                $this->distributeCards($result);
             }
+            
+            
+                echo '<pre>Player1';
+                var_dump($this->player1);
+                echo '</pre>';
+
+                echo '<pre>Player2';
+                var_dump($this->player2);
+                echo '</pre>';
         }
-        
-        /* We are simply reporting the final results here.
-         * This could be thrown into a separate method, but that felt excessive
-        */
-        if ($this->score->player1 == $this->score->player2) {
-            echo "<p><strong>It's a tie! No one wins, except for the love in your heart.</strong></p>";
-        } elseif ($this->score->player1 > $this->score->player2) {
-            echo '<p><strong>Player 1 Wins!</strong></p>';
-        } else {
-            echo '<p><strong>Player 2 Wins!</strong></p>';
-        }
+            
     }
     
     /*
-     * This is to pull cards from the top of the deck, returning an object with one card or multuple.
-     * In most cases we're going to pull either 1 or 3 cards (for when there's a card 'War').
-     * However function can take in any integer.
-     * Usage: pullCards (integer - number of cards, object - array of deck object)
-     * Returns: array of Cards object
+     * This is going to pull the current top card
      */
      
-    private function pullCards($num, $deck)
+    private function topCard()
     {
-        // The cards we are going to return
-        $cards = array();
+        $this->current_card->p1 = array_shift($this->player1);
+        $this->current_card->p2 = array_shift($this->player2);
         
-        switch ($num) {
-            case 1:
-                $cards = array_push($cards, array_shift($deck));
-            break;
-            case 3:
-                $cards = array_splice($deck, 0,3);
-            break;
+        array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);
+                
+    }
+    
+    /*
+     * For when there is a tie and war needs to be declared
+     */
+    private function iDeclareWar() {
+        for ($i = 0; $i < 3; $i++) {
+            array_push($this->card_pool, array_shift($this->player1));
+            array_push($this->card_pool, array_shift($this->player2));
         }
-        
-        return $cards;
     }
         
     /*
      * Here we compare the cards against each other. Using this as a comparison engine.
-     * Note: we're pulling in the full card object, so that in possible future iterations
-     * we can possibly compare against the Suits, if that ever matters.
-     * Usage:
-     * compareCards (object - card 1, object - card 2)
-     * returns string - Tie | Player 1 | Player 2
      */
-    private function compareCards($c1,$c2)
+    private function compareCards()
     {   
         // Pull in the object and grab the values
-        $card1 = $c1->value;
-        $card2 = $c2->value;
-        
+        $card1 = $this->current_card->p1->value;
+        $card2 = $this->current_card->p2->value;
+             
         if ($card1 == $card2) {
             return "Tie";
         } elseif ($card1 > $card2) {
@@ -185,6 +190,19 @@ class Game
         } elseif ($card1 < $card2) {
             return "Player 2";
         }
+    }
+    
+    private function distributeCards($player) {
+        for ($i = 0; $i < count($this->card_pool); $i++) {
+            if ($player == 'Player 1') {
+                array_push($this->player1, $this->card_pool[$i]);
+            } elseif ($player == 'Player 2') {
+                array_push($this->player1, $this->card_pool[$i]);
+            }
+        }
+        
+        // Empty the card array
+        $this->card_pool = array();
     }
         
     /* This handles outputting of the statements. For the purpose of keeping things simple,
