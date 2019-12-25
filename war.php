@@ -79,8 +79,13 @@ class Deck
 
 /*
  * This is the Game, it handles all of the aspects of the game
- * Game->playGame() plays the game
- * Game->output() handles all of the reporting for the game
+ * Game->playGame() - starts playing the game
+ * Game->topCard() - handles pulling the top card from the deck
+ * Game->iDeclareWar() - handles pulling 3 cards in the case of a tie i.e. I Declare War!
+ * Game->compareCards() - handles the comparison of each card
+ * Game->distributeCards() - distributes cards to the winner
+ * Game->cardValue() - takes a card and returns the actual value (Ace, Jack, Queen, King)
+ * Game->output() - handles all of the reporting for the game
  */
 class Game
 {
@@ -94,17 +99,7 @@ class Game
     {
         $this->player1 = $deck->deck1;
         $this->player2 = $deck->deck2;
-        
-        /*
-         * Note: I considered placing the score in the player1/player2 property, however I wanted to keep reporting
-         * on the ties that occurred (so that I could also ensure that I did the math properly
-         */
-        $this->score = new \stdClass(); // So that I don't have to deal with the PHP warning
-        // Create the two properties of the player 1, player 2 scores and the amount of ties
-        $this->score->player1 = 0;
-        $this->score->player2 = 0;
-        $this->score->ties = 0;
-        
+            
         // Sets up the current card properties
         $this->current_card = new \stdClass();
         $this->current_card->p1 = null;
@@ -114,7 +109,7 @@ class Game
     // This handles playing of the game
     public function playGame()
     {
-        // Play the game, while each deck isn't = 0  
+        // Play the game, while each deck has cards 
         while (count($this->player1) != 0 && count($this->player2) != 0) {
             // Pull the top card
             $this->topCard();
@@ -129,7 +124,6 @@ class Game
             } else {
                 $this->distributeCards($result);
             }
-    
             
             // Display the results
             $this->output($this->current_card->p1, $this->current_card->p2, $result);
@@ -139,7 +133,6 @@ class Game
     /*
      * This is going to pull the current top card
      */
-     
     private function topCard()
     {    
         /* 
@@ -191,6 +184,8 @@ class Game
         
     /*
      * Here we compare the cards against each other. Using this as a comparison engine.
+     * Usage: $this->compareCards()
+     * Returns: string (Tie | Player 1 | Player 2)
      */
     private function compareCards()
     {   
@@ -210,9 +205,10 @@ class Game
     }
     /*
      * Distribute the cards to the winner.
-     * Useage: $this->distributeCards(string 'Player 1' | 'Player 2')
+     * Usage: $this->distributeCards(string 'Player 1' | 'Player 2')
      */
-    private function distributeCards($player) {
+    private function distributeCards($player) 
+    {
         for ($i = 0; $i < count($this->card_pool); $i++) {
             if ($player == 'Player 1') {
                 array_push($this->player1, $this->card_pool[$i]);
@@ -232,8 +228,8 @@ class Game
      * Usage: $this->cardValue(integer $card_value);
      * Returns: int || string (Ace | Jack | Queen | King)
      */
-    private function cardValue($card_value) {
-        
+    private function cardValue($card_value)
+    {    
         switch ($card_value) {
             case 1:
                 return 'Ace';
@@ -254,10 +250,10 @@ class Game
 
     /* This handles outputting of the statements. For the purpose of keeping things simple,
      * I created one long string statement and added all of the tags, etc through them
+     * Usage: $this->output(object card, object card, string result (Player 1 | Player 2 | Tie)
      */
     private function output($card1, $card2, $result)
-    {           
-        
+    {
         $output = '<p>';
         $output .= 'Player 1 has <strong>' . $this->cardValue($card1->value) . ' of ' . $card1->suit . '</strong>. ';
         $output .= '<br>';
