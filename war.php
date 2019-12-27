@@ -146,12 +146,12 @@ class Game
             $this->current_card->p2 = array_shift($this->player2);
             // Add each card to the card pool
             array_push($this->card_pool, $this->current_card->p1, $this->current_card->p2);
-        } elseif (count($this->player1) == 1) {
+        } elseif (count($this->player1) == 1 && count($this->player2 > 1)) {
             // Assign the next top card for player 2 as their current card
             $this->current_card->p2 = array_shift($this->player2);
             // Add that card to the pool of cards
             array_push($this->card_pool, $this->current_card->p2);
-        } elseif (count($this->player2) == 1) {
+        } elseif (count($this->player2) == 1  && count($this->player1 > 1)) {
             // Assign the next top card for player 1 as their current card
             $this->current_card->p1 = array_shift($this->player1);
             // Add that card to the pool of cards
