@@ -114,6 +114,7 @@ class Game
             // Pull the top card
             $this->topCard();
             
+            new Debug($this->current_card);
             // Compare the results of the top cards
             $result = $this->compareCards();
             
@@ -197,10 +198,18 @@ class Game
         // If the card is an Ace, or that player has a higher value that player wins,
         if ($card1 == $card2) {
             return "Tie";
-        } elseif ($card1 == 1 || $card1 > $card2) {
-            return "Player 1";
-        } elseif ($card2 == 1 || $card1 < $card2) {
-            return "Player 2";
+        } elseif ($card1 == 1 || $card2 == 1) {
+            if ($card1 == 1) {
+                return "Player 1";
+            } elseif ($card2 == 1) {
+                return "Player 2";
+            }
+        } else {
+            if ($card1 > $card2) {
+                return "Player 1";
+            } elseif ($card1 < $card2) {
+                return "Player 2";
+            }
         }
     }
     /*
@@ -276,6 +285,17 @@ class Game
         $output .= '</strong>';
         
         echo $output;
+    }
+}
+
+class Debug
+{
+
+    public function __construct ($input = null)
+    {
+        echo '<pre>';
+        print_r($input);
+        echo '</pre>';
     }
 }
 
