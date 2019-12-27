@@ -114,7 +114,6 @@ class Game
             // Pull the top card
             $this->topCard();
             
-            new Debug($this->current_card);
             // Compare the results of the top cards
             $result = $this->compareCards();
             
